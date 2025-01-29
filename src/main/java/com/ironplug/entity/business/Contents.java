@@ -52,7 +52,7 @@ public class Contents {
     private void onCreate() {
         ZonedDateTime now = ZonedDateTime.now(ZONE_ID);
         createAt = now;
-        System.out.println("enes");
+        System.out.println("deneme");
     }
 
 }
