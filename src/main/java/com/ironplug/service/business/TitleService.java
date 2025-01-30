@@ -4,6 +4,8 @@ import com.ironplug.entity.business.Title;
 import com.ironplug.entity.user.User;
 import com.ironplug.payload.helpers.MethodHelper;
 import com.ironplug.payload.mapper.TitleMapper;
+import com.ironplug.payload.messeges.ErrorMessages;
+import com.ironplug.payload.messeges.SuccessMessages;
 import com.ironplug.payload.request.busines.TitleRequest;
 import com.ironplug.payload.response.business.TitleResponse;
 import com.ironplug.repository.User.UserRepository;
@@ -34,20 +36,19 @@ public class TitleService {
     @Async
     public CompletableFuture<String> saveTitle(TitleRequest titleRequest, HttpServletRequest httpServletRequest) {
         try {
+
             String email = (String) httpServletRequest.getAttribute("email");
+
             if (email == null) {
-                throw new RuntimeException("Email bilgisi bulunamadı.");
+                throw new RuntimeException(ErrorMessages.EMAIL_NOT_FOUND);
             }
 
             User user = methodHelper.findUserByEmail(email);
             Title title = titleMapper.mapTitleRequestToTitle(titleRequest, user);
 
-            if (!(title.getUser().getId().equals(user.getId()))) {
-                throw new RuntimeException("Bu işlem yalnızca başlık sahibi tarafından yapılabilir.");
-            }
-
             titleRepository.save(title);
-            return CompletableFuture.completedFuture("Title başarıyla kaydedildi.");
+
+            return CompletableFuture.completedFuture(SuccessMessages.TITLE_SAVED_SUCCESSFULLY);
         } catch (Exception e) {
             return CompletableFuture.completedFuture("Bir hata oluştu: " + e.getMessage());
         }
@@ -62,18 +63,18 @@ public class TitleService {
                 // Email bilgisi kontrolü
                 String email = (String) httpServletRequest.getAttribute("email");
                 if (email == null) {
-                    throw new RuntimeException("Email bilgisi bulunamadı.");
+                    throw new RuntimeException(ErrorMessages.EMAIL_NOT_FOUND);
                 }
 
                 // User'ı bulma
                 User user = methodHelper.findUserByEmail(email);
                 Title title = titleRepository.findById(id)
-                        .orElseThrow(() -> new RuntimeException("Title with ID " + id + " not found."));
+                        .orElseThrow(() -> new RuntimeException(String.format(ErrorMessages.TITLE_NOT_FOUND, id)));
 
 
                 // Başlık sahibi kontrolü
                 if (!(title.getUser().getId().equals(user.getId()))) {
-                    throw new RuntimeException("Bu işlem yalnızca başlık sahibi tarafından yapılabilir.");
+                    throw new RuntimeException(ErrorMessages.ONLY_TITLE_OWNER_CAN_PERFORM_THIS_ACTION);
                 }
 
                 // Başlık adını güncelleme ve tarih ayarlama

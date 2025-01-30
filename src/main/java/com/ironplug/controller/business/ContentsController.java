@@ -50,4 +50,12 @@ public class ContentsController {
     }
 
 
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN','CUSTOMER')")
+    public CompletableFuture<String> deleteContent(@PathVariable Long id){
+        return contentsService.deleteContents(id);
+    }
+
+
+
 }

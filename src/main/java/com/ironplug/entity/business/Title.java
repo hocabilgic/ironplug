@@ -30,9 +30,9 @@ public class Title {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     @NotBlank(message = "Başlık adı boş olamaz")
-    @Size(min = 2, max = 255, message = "Başlık adı 3-255 karakter arasında olmalıdır")
+    @Size(min = 2, max = 255, message = "Başlık adı 2-255 karakter arasında olmalıdır")
     private String title_name;
 
     @ManyToOne
@@ -41,7 +41,6 @@ public class Title {
 
 
     @Column(name = "create_at", nullable = false)
-    @NotNull(message = "Create cannot be null")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX", timezone = TIMEZONE)
     private ZonedDateTime createAt;
 
@@ -56,7 +55,6 @@ public class Title {
         createAt = now;
 
     }
-
 
 
 

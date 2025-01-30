@@ -6,22 +6,20 @@ import com.ironplug.entity.business.Title;
 import com.ironplug.entity.user.User;
 import com.ironplug.payload.helpers.MethodHelper;
 import com.ironplug.payload.mapper.ContentsMapper;
+import com.ironplug.payload.messeges.ErrorMessages;
 import com.ironplug.payload.request.busines.ContentsRequest;
 import com.ironplug.payload.response.business.ContentsResponse;
-import com.ironplug.payload.response.business.TitleResponse;
 import com.ironplug.repository.business.ContentsRepository;
 import com.ironplug.repository.business.TitleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-
 import javax.servlet.http.HttpServletRequest;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -46,7 +44,7 @@ public class ContentsService {
         Contents contents=contentsMapper.mapContentRequestToContens(contentsRequest,title);
 
         if (!(title.getUser().getId().equals(user.getId()))) {
-            throw new RuntimeException("Bu işlem yalnızca başlık sahibi tarafından yapılabilir.");
+            throw new RuntimeException(ErrorMessages.ONLY_TITLE_OWNER_CAN_PERFORM_THIS_ACTION);
         }
 
         contentsRepository.save(contents);
@@ -70,7 +68,7 @@ public class ContentsService {
 
         // Başlık sahibi kontrolü
         if (!(contents.getTitle().getUser().getId().equals(user.getId()))) {
-            throw new RuntimeException("Bu işlem yalnızca başlık sahibi tarafından yapılabilir.");
+            throw new RuntimeException(ErrorMessages.ONLY_TITLE_OWNER_CAN_PERFORM_THIS_ACTION);
         }
 
         contents.setContent_name(contentsRequest.getContent_name());
@@ -99,7 +97,7 @@ public class ContentsService {
 
             // Başlık sahibi kontrolü
             if (!title.getUser().getId().equals(user.getId())) {
-                throw new RuntimeException("Bu işlem yalnızca başlık sahibi tarafından yapılabilir.");
+                throw new RuntimeException(ErrorMessages.ONLY_TITLE_OWNER_CAN_PERFORM_THIS_ACTION);
             }
 
             // İçerikleri getir
@@ -114,7 +112,27 @@ public class ContentsService {
     }
 
 
+    public CompletableFuture<String> deleteContents(  Long id) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+
+                if (!contentsRepository.existsById(id)) {
+                    throw new RuntimeException("content bulunamadı.");
+                }
+
+                contentsRepository.deleteById(id);
+
+                return "Silme başarılı";
+
+            } catch (Exception e) {
+                // Hata durumunda mesaj döndür
+                return "Bir hata oluştu: " + e.getMessage();
+            }
+        });
+
+
     }
+}
 
 
 
