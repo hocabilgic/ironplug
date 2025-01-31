@@ -21,6 +21,10 @@ public class ErrorMessages {
     public static final String USER_NOT_FOUND = "User not found with %s : %s";
     public static final String ONLY_TITLE_OWNER_CAN_PERFORM_THIS_ACTION = "This action can only be performed by the title owner.";
     public static final String TITLE_NOT_FOUND = "Title with ID %s not found.";
+    public static final String DELETE_SUCCESSFUL = "Deletion successful.";
+    public static final String ERROR_OCCURRED = "An error occurred: ";
+
+
 
 
 

@@ -14,5 +14,7 @@ public class SuccessMessages {
     public static final String PASSWORD_UPDATE = "Sifre guncellendi";
     public static final String TITLE_SAVED_SUCCESSFULLY = "Title has been saved successfully.";
 
+    public static final String TITLE_UPDATED_SUCCESSFULLY = "Title updated successfully.";
+
 
 }
