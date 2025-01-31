@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -44,13 +45,17 @@ public class TitleService {
             }
 
             User user = methodHelper.findUserByEmail(email);
+            if (user == null) {
+                throw new RuntimeException(ErrorMessages.USER_NOT_FOUND);
+            }
+
             Title title = titleMapper.mapTitleRequestToTitle(titleRequest, user);
 
             titleRepository.save(title);
 
             return CompletableFuture.completedFuture(SuccessMessages.TITLE_SAVED_SUCCESSFULLY);
         } catch (Exception e) {
-            return CompletableFuture.completedFuture("Bir hata oluştu: " + e.getMessage());
+            return CompletableFuture.completedFuture(ErrorMessages.ERROR_OCCURRED+ e.getMessage());
         }
     }
 
@@ -62,15 +67,18 @@ public class TitleService {
             return CompletableFuture.supplyAsync(() -> {
                 // Email bilgisi kontrolü
                 String email = (String) httpServletRequest.getAttribute("email");
-                if (email == null) {
+                if (email == null || email.isBlank()) {
                     throw new RuntimeException(ErrorMessages.EMAIL_NOT_FOUND);
                 }
 
                 // User'ı bulma
                 User user = methodHelper.findUserByEmail(email);
+                if (user == null) {
+                    throw new RuntimeException(ErrorMessages.USER_NOT_FOUND);
+                }
+
                 Title title = titleRepository.findById(id)
                         .orElseThrow(() -> new RuntimeException(String.format(ErrorMessages.TITLE_NOT_FOUND, id)));
-
 
                 // Başlık sahibi kontrolü
                 if (!(title.getUser().getId().equals(user.getId()))) {
@@ -83,7 +91,7 @@ public class TitleService {
 
                 // Veritabanında güncelleme işlemi
                 titleRepository.save(title);
-                return "Title başarıyla güncellendi.";
+                return SuccessMessages.TITLE_UPDATED_SUCCESSFULLY;
             });
 
         } catch (Exception e) {
@@ -93,17 +101,27 @@ public class TitleService {
 
     @Async
     public CompletableFuture<List<TitleResponse>> getTitleList(HttpServletRequest httpServletRequest) {
-        String email = (String) httpServletRequest.getAttribute("email");
-        User user = methodHelper.findUserByEmail(email);
+        return CompletableFuture.supplyAsync(() -> {
+            String email = (String) httpServletRequest.getAttribute("email");
 
-        // Kullanıcıya ait başlıkları al
-        List<Title> titleList = titleRepository.findAllUserTitle(user.getId());
+            if (email == null || email.isBlank()) {
+                throw new RuntimeException(ErrorMessages.EMAIL_NOT_FOUND);
+            }
 
-        // Başlıkları TitleResponse listesine dönüştür
-        List<TitleResponse> titleResponseList = titleMapper.maptitleToTitleListResponse(titleList);
+            User user = methodHelper.findUserByEmail(email);
+            if (user == null) {
+                throw new RuntimeException(ErrorMessages.USER_NOT_FOUND);
+            }
 
-        return CompletableFuture.completedFuture(titleResponseList);
+            List<Title> titleList = titleRepository.findAllUserTitle(user.getId());
+            if (titleList.isEmpty()) {
+                return Collections.emptyList();
+            }
+
+            return titleMapper.maptitleToTitleListResponse(titleList);
+        });
     }
+
 
 
     public CompletableFuture<String> deleteTitle(Long id) {
@@ -111,16 +129,16 @@ public class TitleService {
             try {
 
                 if (!titleRepository.existsById(id)) {
-                    throw new RuntimeException("Başlık bulunamadı.");
+                    throw new RuntimeException(String.format(ErrorMessages.TITLE_NOT_FOUND, id));
                 }
 
                 titleRepository.deleteById(id);
 
-                return "Silme başarılı";
+                return ErrorMessages.DELETE_SUCCESSFUL;
 
             } catch (Exception e) {
                 // Hata durumunda mesaj döndür
-                return "Bir hata oluştu: " + e.getMessage();
+                return ErrorMessages.ERROR_OCCURRED + e.getMessage();
             }
         });
     }
