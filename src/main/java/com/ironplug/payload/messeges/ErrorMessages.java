@@ -24,6 +24,9 @@ public class ErrorMessages {
     public static final String DELETE_SUCCESSFUL = "Deletion successful.";
     public static final String ERROR_OCCURRED = "An error occurred: ";
 
+    public static final String CONTENTS_NOT_FOUND = "Contents with ID %s not found.";
+
+
 
 
 

@@ -35,6 +35,8 @@ public class Title {
     @Size(min = 2, max = 255, message = "Başlık adı 2-255 karakter arasında olmalıdır")
     private String title_name;
 
+    private Boolean isControl=false;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user; // User ile ilişki tanımlandı

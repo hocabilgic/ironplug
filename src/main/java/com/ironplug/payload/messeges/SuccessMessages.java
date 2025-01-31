@@ -15,6 +15,9 @@ public class SuccessMessages {
     public static final String TITLE_SAVED_SUCCESSFULLY = "Title has been saved successfully.";
 
     public static final String TITLE_UPDATED_SUCCESSFULLY = "Title updated successfully.";
+    public static final String CONTENT_SAVED_SUCCESSFULLY = "Content saved successfully.";
+    public static final String CONTENTS_UPDATED_SUCCESSFULLY = "Contents updated successfully.";
+
 
 
 }
