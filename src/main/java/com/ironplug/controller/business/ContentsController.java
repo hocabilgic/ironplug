@@ -23,7 +23,7 @@ public class ContentsController {
 
     private final ContentsService contentsService;
 
-    // User Title kayıt eder
+    // User Contents kayıt eder
     @PostMapping("/{titleId}/save")
     @PreAuthorize("hasAnyAuthority('ADMIN','CUSTOMER')")
     public CompletableFuture<String> saveContents(@RequestBody @Valid ContentsRequest contentsRequest,

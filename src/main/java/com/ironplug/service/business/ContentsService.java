@@ -7,6 +7,7 @@ import com.ironplug.entity.user.User;
 import com.ironplug.payload.helpers.MethodHelper;
 import com.ironplug.payload.mapper.ContentsMapper;
 import com.ironplug.payload.messeges.ErrorMessages;
+import com.ironplug.payload.messeges.SuccessMessages;
 import com.ironplug.payload.request.busines.ContentsRequest;
 import com.ironplug.payload.response.business.ContentsResponse;
 import com.ironplug.repository.business.ContentsRepository;
@@ -37,9 +38,17 @@ public class ContentsService {
                                                   Long titleId) {
 
         String email = (String) httpServletRequest.getAttribute("email");
+        if (email == null || email.isBlank()) {
+            throw new RuntimeException(ErrorMessages.EMAIL_NOT_FOUND);
+        }
+
         User user = methodHelper.findUserByEmail(email);
+        if (user == null) {
+            throw new RuntimeException(ErrorMessages.USER_NOT_FOUND);
+        }
+
         Title title = titleRepository.findById(titleId)
-                .orElseThrow(() -> new RuntimeException("Title with ID " + titleId + " not found."));
+                .orElseThrow(() -> new RuntimeException(String.format(ErrorMessages.TITLE_NOT_FOUND, titleId)));
 
         Contents contents=contentsMapper.mapContentRequestToContens(contentsRequest,title);
 
@@ -48,7 +57,7 @@ public class ContentsService {
         }
 
         contentsRepository.save(contents);
-        return CompletableFuture.completedFuture("Title başarıyla kaydedildi.");
+        return CompletableFuture.completedFuture(SuccessMessages.CONTENT_SAVED_SUCCESSFULLY);
     }
 
     public CompletableFuture<String> updateContents(ContentsRequest contentsRequest,
@@ -57,14 +66,15 @@ public class ContentsService {
 
         String email = (String) httpServletRequest.getAttribute("email");
         if (email == null) {
-            throw new RuntimeException("Email bilgisi bulunamadı.");
+            throw new RuntimeException(ErrorMessages.USER_NOT_FOUND);
         }
 
         User user = methodHelper.findUserByEmail(email);
-
-        Contents contents=contentsRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Contents with ID " + id + " not found."));
-
+        if (user == null ) {
+            throw new RuntimeException(ErrorMessages.USER_NOT_FOUND);
+        }
+        Contents contents = contentsRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException(String.format(ErrorMessages.CONTENTS_NOT_FOUND, id)));
 
         // Başlık sahibi kontrolü
         if (!(contents.getTitle().getUser().getId().equals(user.getId()))) {
@@ -75,7 +85,7 @@ public class ContentsService {
         contents.setUpdateAt(ZonedDateTime.now());
 
         contentsRepository.save(contents);
-        return CompletableFuture.completedFuture("Contents başarıyla güncellendi.");
+        return CompletableFuture.completedFuture(SuccessMessages.CONTENTS_UPDATED_SUCCESSFULLY);
     }
 
 
@@ -85,12 +95,16 @@ public class ContentsService {
         return CompletableFuture.supplyAsync(() -> {
             String email = (String) httpServletRequest.getAttribute("email");
             if (email == null) {
-                throw new RuntimeException("Email bilgisi bulunamadı.");
+                throw new RuntimeException(ErrorMessages.USER_NOT_FOUND);
             }
 
             User user = methodHelper.findUserByEmail(email);
+            if (user == null ) {
+                throw new RuntimeException(ErrorMessages.USER_NOT_FOUND);
+            }
+
             Title title = titleRepository.findById(titleId)
-                    .orElseThrow(() -> new RuntimeException("Title with ID " + titleId + " not found."));
+                    .orElseThrow(() -> new RuntimeException(String.format(ErrorMessages.TITLE_NOT_FOUND, titleId)));
 
 
             List<Contents> contentsList=contentsRepository.findByTitleId(titleId);
@@ -117,16 +131,16 @@ public class ContentsService {
             try {
 
                 if (!contentsRepository.existsById(id)) {
-                    throw new RuntimeException("content bulunamadı.");
+                    throw new RuntimeException(String.format(ErrorMessages.CONTENTS_NOT_FOUND, id));
                 }
 
                 contentsRepository.deleteById(id);
 
-                return "Silme başarılı";
+                return ErrorMessages.DELETE_SUCCESSFUL;
 
             } catch (Exception e) {
                 // Hata durumunda mesaj döndür
-                return "Bir hata oluştu: " + e.getMessage();
+                return ErrorMessages.ERROR_OCCURRED + e.getMessage();
             }
         });
 
