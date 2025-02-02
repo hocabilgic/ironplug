@@ -57,7 +57,7 @@ public class AuthService {
                 .orElseThrow(() -> new ResourceNotFoundException("User", "email or reset code", userUpdatePasswordRequest.getEmail()));
 
         // Şifreyi güncelle ve reset kodunu temizle
-        userService.updatePassword(user, userUpdatePasswordRequest.getNewPassword());
+      //  userService.updatePassword(user, userUpdatePasswordRequest.getNewPassword());
 
         return new ResponseMessage<>(null, HttpStatus.OK, SuccessMessages.PASSWORD_UPDATE);
     }

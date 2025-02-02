@@ -93,10 +93,10 @@ public class WebSecurityConfig {
             "/images/**",
             "/js/**",
             "/contactMessages/save",
-            "/login",
-            "/register",
-            "/reset/resetPassword",
-            "/reset/updatePassword",
+            "/users/login",
+            "/users/register",
+            "/users/generate-reset-code",
+            "/users/reset-password",
 
 
 

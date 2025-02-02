@@ -27,8 +27,7 @@ public  class AbstractUserRequest {
     @Size(min=5, max=50 , message = "Your email should be between 5 and 50 chars")
     private String email;
 
-    @NotBlank(message = "Telefon numarası boş olamaz")
-    @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Geçersiz telefon numarası formatı")
+
     private String telephone; // Telefon numarası (+90 555 555 5555 gibi)
 
 
