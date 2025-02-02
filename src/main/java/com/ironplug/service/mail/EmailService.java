@@ -2,15 +2,19 @@ package com.ironplug.service.mail;
 
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StreamUtils;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -28,6 +32,38 @@ public class EmailService {
     public EmailService(JavaMailSender javaMailSender, TemplateEngine templateEngine) {
         this.javaMailSender = javaMailSender;
         this.templateEngine = templateEngine;
+    }
+
+    @Async
+    public void resetCodeEmail(String code, String to, String firstName, String lastName) throws IOException, MessagingException {
+        String htmlTemplate = loadHtmlTemplate("templates/PasswordResetMail.html");
+
+        // Şifre sıfırlama linki oluşturuluyor
+        // TODO: linke gerek var mı
+        // TODO: Link adresi eklenecek
+        String resetLink = "https://www.youtube.com/@birCeviz";
+
+        // HTML gövdesini değişkenlerle doldurun
+        String htmlBody = htmlTemplate
+                .replace("${firstName}", firstName != null ? firstName : "")
+                .replace("${lastName}", lastName != null ? lastName : "")
+                .replace("${code}", code != null ? code : "Kod eksik")
+                .replace("${resetLink}", resetLink);
+
+        // MimeMessage oluştur ve ayarla
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+        helper.setTo(to);
+        helper.setSubject("Password Reset Code");
+        helper.setText(htmlBody, true); // HTML formatında gönderim
+        helper.setFrom("muratberatbasari@gmail.com");
+
+        javaMailSender.send(mimeMessage);
+    }
+    private String loadHtmlTemplate(String path) throws IOException {
+        ClassPathResource resource = new ClassPathResource(path);
+        return StreamUtils.copyToString(resource.getInputStream(), StandardCharsets.UTF_8);
     }
 
 

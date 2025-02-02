@@ -72,8 +72,8 @@ public class User {
     private static final int CODE_LENGTH = 6;
     private static final SecureRandom RANDOM = new SecureRandom();
 
-    private int failedAttempts = 3; // Yanlış kod denemesi sayacı
-    private static final int MAX_FAILED_ATTEMPTS = 5; // Maksimum başarısız deneme hakkı
+    //private int failedAttempts = 3; // Yanlış kod denemesi sayacı
+    //private static final int MAX_FAILED_ATTEMPTS = 5; // Maksimum başarısız deneme hakkı
 
     //TODO bu kod baska clasta yazilabilir
     //TODO hatali reset codda mesaj donmeli ve hatali giris sayisinda sikinti var duzeltilmeli
@@ -89,25 +89,5 @@ public class User {
         this.resetPasswordCodeExpiry = ZonedDateTime.now().plusMinutes(3); // Kodun geçerlilik süresi
     }
 
-    // Kodun geçerliliğini kontrol eder
-    public boolean isResetPasswordCodeValid(String code) {
-        if (resetPasswordCodeExpiry == null || ZonedDateTime.now().isAfter(resetPasswordCodeExpiry)) {
-            throw new RuntimeException(ErrorMessages.RESET_CODE_EXPIRED);
-           // Kodun süresi dolmuş
-        }
 
-        if (failedAttempts >= MAX_FAILED_ATTEMPTS) {
-            throw new RuntimeException(ErrorMessages.MAX_ATTEMPTS_REACHED); // Maksimum deneme sayısına ulaşıldı
-             // Maksimum deneme sayısına ulaşıldı
-        }
-
-        if (!resetPasswordCode.equals(code)) {
-            failedAttempts++;
-            throw new RuntimeException(ErrorMessages.INCORRECT_RESET_CODE);
-            // Yanlış kod
-        }
-
-        failedAttempts = 0; // Başarılı girişten sonra sıfırla
-        return true; // Kod doğru
-    }
 }

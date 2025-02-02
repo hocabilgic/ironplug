@@ -30,4 +30,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("SELECT u FROM User u WHERE u.email = :email AND u.resetPasswordCode = :resetCode")
     Optional<User> findByEmailAndResetPasswordCode(@Param("email") String email, @Param("resetCode") String resetCode);
 
+    boolean existsByEmailEquals(String email);
+
+    User findByEmailEquals(String email);
 }
