@@ -4,8 +4,9 @@ public class ErrorMessages {
 
 
 
-    private  ErrorMessages(){}
 
+    private  ErrorMessages(){}
+    public static final String IMAGE_NOT_FOUND_MESSAGE ="image bulunamadi" ;
     public static final String NOT_PERMITTED_METHOD_MESSAGE = "You do not have any permission to do this operation";
 
     public static final String PASSWORD_DONT_CONSIST_DIGIT = "Your passwords must have a digit at least";
