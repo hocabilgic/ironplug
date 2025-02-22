@@ -31,6 +31,8 @@ public class Image {
     private String name;
 
 
+
+
     //@Column
     //private String type;
     //todo emun tipinde olsa daha mi iyi olur?
