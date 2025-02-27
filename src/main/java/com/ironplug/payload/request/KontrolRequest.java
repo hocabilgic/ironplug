@@ -16,6 +16,8 @@ public class KontrolRequest {
     @NotNull(message = "Başlık ID boş olamaz")
     private Long baslikId;
 
+    private Long imageId;
+
     private Long titleId;
 
     private String contentName;
