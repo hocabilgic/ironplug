@@ -13,40 +13,37 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Service
 @RequiredArgsConstructor
 public class KontrolService {
 
-private final ImageService imageService;
-private final TitleService titleService;
-private final KontrolRepository kontrolRepository;
-
-
-
-
-
+    private final ImageService imageService;
+    private final TitleService titleService;
+    private final KontrolRepository kontrolRepository;
 
     public List<KontrolResponse> kresteKontrol(List<KontrolRequest> kontrols) {
         List<KontrolResponse> kresteKontrolResponse = new ArrayList<>();
 
         for (KontrolRequest kontrolRequest : kontrols) {
-            if (!kontrolRequest.getKontrolEdildi()) {
+            if (!Boolean.TRUE.equals(kontrolRequest.getKontrolEdildi())) {
                 throw new RuntimeException(ErrorMessages.KONTROL_BOS);
             }
 
             // Image ve Title servislerinden gerekli verileri al
             Image image = imageService.getImageById(kontrolRequest.getImageId());
-            Title title = titleService.getTitlebyID(kontrolRequest.getBaslikId());
+            if (image == null) {
+                throw new RuntimeException(ErrorMessages.IMAGE_BOS);
+            }
 
-            if (image == null || title == null) {
-                throw new RuntimeException(ErrorMessages.IMAGE_VEYA_TITLE_BOS);
+            Title title = titleService.getTitlebyID(kontrolRequest.getBaslikId());
+            if (title == null) {
+                throw new RuntimeException(ErrorMessages.TITLE_BOS);
             }
 
             // Entity oluştur ve veritabanına kaydet
             Kontrol kontrol = new Kontrol();
             kontrol.setKontrolEdildi(kontrolRequest.getKontrolEdildi());
-            kontrol.setImages((List<Image>) image);
+            kontrol.setImages(List.of(image)); // Tek nesneyi listeye çevirme
             kontrol.setBaslik(title);
             kontrol.setContentName(kontrolRequest.getContentName());
 
@@ -55,18 +52,15 @@ private final KontrolRepository kontrolRepository;
 
             // Entity'i Response'a çevir ve listeye ekle
             KontrolResponse response = new KontrolResponse();
-            response.setId(kontrol.getId());  // Kaydedilen entity'nin ID'sini ekleyelim
+            response.setId(kontrol.getId());
             response.setKontrolEdildi(kontrol.getKontrolEdildi());
             response.setContentName(kontrol.getContentName());
-            response.setCreateAt(kontrol.getCreateAt());
+            response.setCreateAt(kontrol.getCreateAt());  // Eğer createAt otomatik set edilmiyorsa, LocalDateTime.now() eklenebilir
             response.setUpdateAt(kontrol.getUpdateAt());
-
 
             kresteKontrolResponse.add(response);
         }
 
         return kresteKontrolResponse;
     }
-
-
 }
