@@ -6,6 +6,10 @@ public class ErrorMessages {
 
 
     private  ErrorMessages(){}
+
+
+    public static final String TITLE_BOS = "title bos olanaaz";
+    public static final String IMAGE_BOS = "image bos";
     public static final String IMAGE_VEYA_TITLE_BOS = "image veya title bos";
     public static final String KONTROL_BOS="kontrol sekmeleri bos olamaz";
     public static final String IMAGE_NOT_FOUND_MESSAGE ="image bulunamadi" ;
