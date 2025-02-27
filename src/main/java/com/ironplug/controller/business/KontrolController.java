@@ -9,10 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -26,11 +23,10 @@ private final KontrolService kontrolService;
 
     @PreAuthorize("hasAnyAuthority('ADMIN','CUSTOMER')")
     @PostMapping()
-    public ResponseEntity<List<KontrolResponse>> kontrolOlustur(@RequestParam("") List<KontrolRequest> kontrolsrequest
-    ) {
-
+    public ResponseEntity<List<KontrolResponse>> kontrolOlustur(@RequestBody List<KontrolRequest> kontrolsrequest) {
         List<KontrolResponse> kontrols1 = kontrolService.kresteKontrol(kontrolsrequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(kontrols1);
     }
+
 
 }
