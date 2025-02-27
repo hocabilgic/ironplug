@@ -145,4 +145,11 @@ public class TitleService {
 
 
 
+    public Title getTitlebyID(Long id){
+
+       return titleRepository.findById(id).orElseThrow(
+               () -> new RuntimeException(String.format(ErrorMessages.TITLE_NOT_FOUND, id))
+       );    }
+
+
 }

@@ -30,6 +30,12 @@ public class Image {
     @Column(nullable = false)
     private String name;
 
+    @ManyToOne
+    @JoinColumn(name = "kontrol_id") // kontrol tablosundaki ilişkiyi belirten sütun adı
+    private Kontrol kontrol;
+
+
+
 
     //@Column
     //private String type;
