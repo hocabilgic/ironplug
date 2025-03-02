@@ -76,10 +76,12 @@ public class KontrolService {
     public void temizleKontroller() {
         ZonedDateTime birHaftaOnce = ZonedDateTime.now().minusDays(7);
 
+
+
         // 7 günden eski kontrolleri sil
         kontrolRepository.deleteByCreateAtBefore(birHaftaOnce);
 
-        System.out.println("7 günden eski kontroller temizlendi.");
+
     }
 
 
