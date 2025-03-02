@@ -37,8 +37,8 @@ public class Kontrol {
 
 
 
-    @OneToMany(mappedBy = "kontrol", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Image> images;
+    @OneToOne(mappedBy = "kontrol", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Image images;
 
     @Column(name = "create_at", nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX", timezone = TIMEZONE)

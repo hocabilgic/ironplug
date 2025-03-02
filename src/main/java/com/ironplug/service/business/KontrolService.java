@@ -8,8 +8,10 @@ import com.ironplug.payload.request.KontrolRequest;
 import com.ironplug.payload.response.KontrolResponse;
 import com.ironplug.repository.business.KontrolRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,21 +33,24 @@ public class KontrolService {
 
             // Image ve Title servislerinden gerekli verileri al
             Image image = imageService.getImageById(kontrolRequest.getImageId());
-            if (image == null) {
-                throw new RuntimeException(ErrorMessages.IMAGE_BOS);
-            }
+
 
             Title title = titleService.getTitlebyID(kontrolRequest.getBaslikId());
             if (title == null) {
                 throw new RuntimeException(ErrorMessages.TITLE_BOS);
             }
 
+            // Mevcut kaydı titleId ile kontrol et
+            Kontrol kontrol = kontrolRepository.findByBaslikId(kontrolRequest.getBaslikId())
+                    .orElse(new Kontrol()); // Eğer yoksa yeni bir kontrol oluştur
+
             // Entity oluştur ve veritabanına kaydet
-            Kontrol kontrol = new Kontrol();
+
             kontrol.setKontrolEdildi(kontrolRequest.getKontrolEdildi());
-            kontrol.setImages(List.of(image)); // Tek nesneyi listeye çevirme
+            kontrol.setImages(image); // Tek nesneyi listeye çevirme
             kontrol.setBaslik(title);
             kontrol.setContentName(kontrolRequest.getContentName());
+
 
             // Repository kullanarak entity'i kaydet
             kontrol = kontrolRepository.save(kontrol);
@@ -57,10 +62,28 @@ public class KontrolService {
             response.setContentName(kontrol.getContentName());
             response.setCreateAt(kontrol.getCreateAt());  // Eğer createAt otomatik set edilmiyorsa, LocalDateTime.now() eklenebilir
             response.setUpdateAt(kontrol.getUpdateAt());
+            response.setBaslikAdi(kontrol.getBaslik().getTitle_name());
 
             kresteKontrolResponse.add(response);
         }
 
         return kresteKontrolResponse;
     }
+
+
+    // Her gün gece 2'de çalışacak (CRON: "0 0 2 * * *")
+    @Scheduled(cron = "0 0 2 * * *")
+    public void temizleKontroller() {
+        ZonedDateTime birHaftaOnce = ZonedDateTime.now().minusDays(7);
+
+
+
+        // 7 günden eski kontrolleri sil
+        kontrolRepository.deleteByCreateAtBefore(birHaftaOnce);
+
+
+    }
+
+
+
 }
