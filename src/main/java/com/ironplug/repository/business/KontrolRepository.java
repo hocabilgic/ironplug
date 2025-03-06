@@ -19,4 +19,8 @@ public interface KontrolRepository extends JpaRepository<Kontrol, Long> {
 
     Optional<Kontrol> findByBaslikId(Long baslikId);
 
+
+        List<Kontrol> findAllByBaslikId(Long baslikId);
+
+
 }

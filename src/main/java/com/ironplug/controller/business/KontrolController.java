@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -27,6 +28,11 @@ private final KontrolService kontrolService;
         List<KontrolResponse> kontrols1 = kontrolService.kresteKontrol(kontrolsrequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(kontrols1);
     }
-
+    @PreAuthorize("hasAnyAuthority('ADMIN','CUSTOMER')")
+    @GetMapping("/{titleId}")
+    public ResponseEntity<List<KontrolResponse>> getAllKontrols(@PathVariable Long titleId,HttpServletRequest httpServletRequest) {
+        List<KontrolResponse> kontrols = kontrolService.getAllKontrols(titleId,httpServletRequest);
+        return ResponseEntity.ok(kontrols);
+    }
 
 }
