@@ -3,6 +3,7 @@ package com.ironplug.service.business;
 import com.ironplug.entity.business.Image;
 import com.ironplug.entity.business.Kontrol;
 import com.ironplug.entity.business.Title;
+import com.ironplug.entity.user.User;
 import com.ironplug.payload.messeges.ErrorMessages;
 import com.ironplug.payload.request.KontrolRequest;
 import com.ironplug.payload.response.KontrolResponse;
@@ -11,9 +12,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +35,7 @@ public class KontrolService {
             }
 
             // Image ve Title servislerinden gerekli verileri al
-            Image image = imageService.getImageById(kontrolRequest.getImageId());
+            Image image = imageService.getImageByIdnull(kontrolRequest.getImageId());
 
 
             Title title = titleService.getTitlebyID(kontrolRequest.getBaslikId());
@@ -77,13 +80,39 @@ public class KontrolService {
         ZonedDateTime birHaftaOnce = ZonedDateTime.now().minusDays(7);
 
 
-
         // 7 günden eski kontrolleri sil
         kontrolRepository.deleteByCreateAtBefore(birHaftaOnce);
 
 
     }
 
+    public List<KontrolResponse> getAllKontrols(Long titleId, HttpServletRequest httpServletRequest) {
+        String email = (String) httpServletRequest.getAttribute("email");
+
+        if (email == null) {
+            throw new RuntimeException(ErrorMessages.EMAIL_NOT_FOUND);
+        }
+
+        // Verilen titleId'ye sahip tüm kontrolleri al
+        List<Kontrol> kontroller = kontrolRepository.findAllByBaslikId(titleId);
+
+        if (kontroller.isEmpty()) {
+            throw new RuntimeException(String.format(ErrorMessages.TITLE_NOT_FOUND, titleId));
+        }
+
+        // Kontrol entity'lerini KontrolResponse nesnelerine dönüştür
+        return kontroller.stream().map(kontrol -> {
+            KontrolResponse response = new KontrolResponse();
+            response.setId(kontrol.getId());
+            response.setKontrolEdildi(kontrol.getKontrolEdildi());
+            response.setContentName(kontrol.getContentName());
+            response.setCreateAt(kontrol.getCreateAt());
+            response.setUpdateAt(kontrol.getUpdateAt());
+            response.setBaslikAdi(kontrol.getBaslik().getTitle_name());
+            return response;
+        }).collect(Collectors.toList());
+    }
 
 
 }
+
