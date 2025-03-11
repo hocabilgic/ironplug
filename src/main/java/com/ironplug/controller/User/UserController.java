@@ -47,7 +47,8 @@ public class UserController {
 
     // reset kod gönderme
     @PostMapping("/generate-reset-code")
-    public CompletableFuture<String> sendResetCode(@RequestBody @Valid ResetCodeRequest resetCodeRequest) throws MessagingException, IOException {
+    public CompletableFuture<String> sendResetCode(@RequestBody @Valid ResetCodeRequest resetCodeRequest)
+            throws MessagingException, IOException {
         return userServise.sendResetCode(resetCodeRequest);
     }
 
@@ -61,8 +62,8 @@ public class UserController {
 
     @PutMapping("/updatePassword")
     @PreAuthorize("hasAnyAuthority('ADMIN','CUSTOMER')")
-    public CompletableFuture<String> updatePassword(@RequestBody @Valid UpdatePasswordRequest updatePasswordRequest,
-                                                    HttpServletRequest httpServlet) {
+    public String updatePassword(@RequestBody @Valid UpdatePasswordRequest updatePasswordRequest,
+                                 HttpServletRequest httpServlet) {
 
         return userServise.updatePassword2(updatePasswordRequest, httpServlet);
     }

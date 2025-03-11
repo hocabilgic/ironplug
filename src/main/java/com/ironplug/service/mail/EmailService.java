@@ -57,7 +57,7 @@ public class EmailService {
         helper.setTo(to);
         helper.setSubject("Password Reset Code");
         helper.setText(htmlBody, true); // HTML formatında gönderim
-        helper.setFrom("muratberatbasari@gmail.com");
+        helper.setFrom("hocabilgic80.c@gmail.com");
 
         javaMailSender.send(mimeMessage);
     }

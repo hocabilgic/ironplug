@@ -19,8 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @SpringBootApplication
-@EnableAsync
-@EnableScheduling
+
 public class ironplugApplication implements CommandLineRunner {
 
 	private final UserRoleService userRoleService;
