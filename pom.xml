@@ -124,15 +124,6 @@
 			<artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
 
-
-
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-boot-starter</artifactId>
-			<version>3.0.0</version> <!-- En son versiyonu kontrol et -->
-		</dependency>
-
-
 	</dependencies>
 
 	<build>
