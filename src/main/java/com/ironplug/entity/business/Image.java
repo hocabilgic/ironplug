@@ -22,20 +22,13 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Lob //büyük boyutlu datalar için sütun oluşmasını sağlar
-    @Column(nullable = false)
-    @Basic(fetch = FetchType.LAZY) // Lazy loading
+    @Lob
+    @Column(nullable = false, columnDefinition = "bytea")
+    @Basic(fetch = FetchType.LAZY)
     private byte[] data;
 
     @Column(nullable = false)
     private String name;
-
-    @OneToOne
-    @JoinColumn(name = "kontrol_id") // kontrol tablosundaki ilişkiyi belirten sütun adı
-    private Kontrol kontrol;
-
-
-
 
     //@Column
     //private String type;
@@ -46,9 +39,6 @@ public class Image {
 
     @Column(nullable = false)
     private Boolean featured;
-
-
-
 
 }
 

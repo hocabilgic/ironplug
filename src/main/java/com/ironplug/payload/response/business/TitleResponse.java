@@ -9,6 +9,8 @@ import lombok.*;
 @Builder
 public class TitleResponse {
 
+
+    private Long id;
     private String title_name;
 
 }

@@ -34,8 +34,8 @@ public class Kontrol {
     private String contentName;
 
 
-
-    @OneToOne(mappedBy = "kontrol", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "image_id")
     private Image images;
 
     @Column(name = "create_at", nullable = false)
@@ -52,7 +52,6 @@ public class Kontrol {
         ZonedDateTime now = ZonedDateTime.now(ZONE_ID);
         createAt = now;
         updateAt = now;
-
     }
 
     @PreUpdate
