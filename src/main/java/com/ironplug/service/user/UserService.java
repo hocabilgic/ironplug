@@ -177,7 +177,7 @@ public class UserService {
 
                 validator.validateBuiltInUser(user);
                 validator.validateResetCode(resetCodeFromRequest, user.getResetPasswordCode());
-                validator.validateStrongPassword(passwordResetRequest.getNewPassword());
+               // validator.validateStrongPassword(passwordResetRequest.getNewPassword());
 
                 user.setSifre(passwordEncoder.encode(passwordResetRequest.getNewPassword()));
                 user.setResetPasswordCode(null);
@@ -194,7 +194,7 @@ public class UserService {
         public String updatePassword2(UpdatePasswordRequest updatePasswordRequest, HttpServletRequest httpServlet) {
 
                 validator.validatePasswordMatch(updatePasswordRequest.getNewPassword(), updatePasswordRequest.getConfirmPassword());
-                validator.validateStrongPassword(updatePasswordRequest.getNewPassword());
+               // validator.validateStrongPassword(updatePasswordRequest.getNewPassword());
 
                 String email = (String) httpServlet.getAttribute("email");
                 User user = methodHelper.findUserByEmail(email);
