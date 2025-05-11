@@ -9,5 +9,6 @@ import lombok.*;
 @Builder
 public class ContentsResponse {
 
+    private Long id;
     private String content_name;
 }

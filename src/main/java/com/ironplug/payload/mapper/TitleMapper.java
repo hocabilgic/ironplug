@@ -25,6 +25,7 @@ public class TitleMapper {
         return titleList.stream()
                 .map(title -> TitleResponse.builder()
                         .title_name(title.getTitle_name())
+                        .id(title.getId())
                         .build())
                 .collect(Collectors.toList());
     }

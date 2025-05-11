@@ -34,7 +34,7 @@ public class ImageService {
                 new ResourceNotFoundException(String.format(ErrorMessages.IMAGE_NOT_FOUND_MESSAGE, imageId)));
     }
 
-    public Image getImageByIdnull(Long imageId) {
+    public Image getImageByIdIfNotNull(Long imageId) {
 
         if (imageId==null) return null;
 
