@@ -138,12 +138,6 @@ public class UserService {
                 return userRepository.findByEmailAndResetPasswordCode(email, resetCode);
         }
 
-        // Şifreyi güncelle
-   //   public void updatePassword(User user, String newPassword) {
-   //           user.setSifre(passwordEncoder.encode(newPassword)); // Şifreyi hashleyin
-   //           user.setResetPasswordCode(null); // Kodun hashini temizleyin
-   //           userRepository.save(user);
-   //   }
 
 
         @Async
@@ -196,17 +190,14 @@ public class UserService {
 
 
 
-        @Async
-        public CompletableFuture<String> updatePassword2(UpdatePasswordRequest updatePasswordRequest, HttpServletRequest httpServlet) {
+
+        public String updatePassword2(UpdatePasswordRequest updatePasswordRequest, HttpServletRequest httpServlet) {
 
                 validator.validatePasswordMatch(updatePasswordRequest.getNewPassword(), updatePasswordRequest.getConfirmPassword());
                 validator.validateStrongPassword(updatePasswordRequest.getNewPassword());
 
-
                 String email = (String) httpServlet.getAttribute("email");
                 User user = methodHelper.findUserByEmail(email);
-
-
 
                 if (!passwordEncoder.matches(updatePasswordRequest.getOldPassword(), user.getSifre())) {
                         throw new IllegalStateException(ErrorMessages.OLD_PASSWORD_NOT_MATCH);
@@ -215,9 +206,8 @@ public class UserService {
                 user.setSifre(passwordEncoder.encode(updatePasswordRequest.getNewPassword()));
                 userRepository.save(user);
 
-                return CompletableFuture.completedFuture(SuccessMessages.PASSWORD_UPDATED);
+                return SuccessMessages.PASSWORD_UPDATED;
         }
-
 
 
 
