@@ -13,8 +13,8 @@ done
 
 # PostgreSQL kullanıcısı ve veritabanını oluştur
 su - postgres -c "psql -c \"ALTER USER postgres WITH PASSWORD 'postgres';\""
-# Veritabanı varsa hata vermemesini sağla
-su - postgres -c "psql -c \"SELECT 'CREATE DATABASE ironplug' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'ironplug')\gexec\""
+# Veritabanı oluşturma - varsa hata vermez
+su - postgres -c "psql -c \"CREATE DATABASE ironplug WITH OWNER postgres;\" || echo 'Veritabanı zaten var, devam ediliyor...'"
 echo "PostgreSQL kullanıcı ve veritabanı oluşturuldu..."
 
 # Spring Boot uygulamasını başlat
