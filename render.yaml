@@ -31,9 +31,7 @@ services:
         value: smtp.gmail.com
       - key: MAIL_PORT
         value: 587
-      # JWT Bilgileri
-      - key: JWT_SECRET
-        value: qWSejklmOPoiuytrDFGHJvbnmTYU12345678QWERTYUIOHJGFDSSERT4567892345
+      # JWT Bilgileri - JWT_SECRET artık doğrudan properties dosyasında
       - key: JWT_EXPIRATION_MS
         value: 8640000
       # Host eklenmesi gerekiyor
