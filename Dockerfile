@@ -6,27 +6,15 @@ COPY src ./src
 RUN mvn package -DskipTests
 
 FROM eclipse-temurin:17-jre-focal
-
-# PostgreSQL kurulumu
-RUN apt-get update && \
-    apt-get install -y postgresql postgresql-contrib && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-# PostgreSQL veri dizini oluşturma
-RUN mkdir -p /var/lib/postgresql/data && \
-    chown -R postgres:postgres /var/lib/postgresql/data
-
-# Maven build sonuçlarını kopyalama
 WORKDIR /app
+
+# JAR dosyasını kopyala
 COPY --from=build /app/target/*.jar app.jar
 
-# Başlatma scripti
+# Start script
 COPY start.sh /start.sh
 RUN chmod +x /start.sh
 
-# Portlar
-EXPOSE 8082 5432
+EXPOSE 8082
 
-# Başlatma komutu
-CMD ["/start.sh"] 
+CMD ["/start.sh"]
