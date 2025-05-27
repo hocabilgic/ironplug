@@ -2,29 +2,63 @@ services:
   - type: web
     name: ironplug-app
     env: docker
-    repo: https://github.com/yourusername/ironpluga.git
+    repo: https://github.com/hocabilgic/ironplug.git
+
     branch: main
     dockerfilePath: ./Dockerfile
     dockerContext: .
     envVars:
       - key: SPRING_PROFILES_ACTIVE
-        value: docker
+        value: render # 'render' olarak güncellendi
+      - key: SERVER_PORT # Render genellikle PORT kullanır, kontrol edin.
+        value: 10000
+      # --- EKLENMESİ GEREKENLER ---
+      - key: DB_HOST
+        fromService: # Otomatik olarak DB adresini alır
+          type: pserv
+          name: ironplug-postgres
+          property: host
+      - key: DB_PORT
+        fromService:
+          type: pserv
+          name: ironplug-postgres
+          property: port
+      - key: DB_NAME
+        fromService:
+          type: pserv
+          name: ironplug-postgres
+          property: database
+      - key: DB_USERNAME
+        fromService:
+          type: pserv
+          name: ironplug-postgres
+          property: user
+      - key: DB_PASSWORD
+        fromService:
+          type: pserv
+          name: ironplug-postgres
+          property: password
       - key: MAIL_USERNAME
-        sync: false
+        sync: false # Render UI'dan girin
       - key: MAIL_PASSWORD
-        sync: false
-    
+        sync: false # Render UI'dan girin
+      - key: JWT_SECRET
+        sync: false # Render UI'dan girin
+      - key: JWT_EXPIRATION_MS
+        value: 8640000
+      # Gerekliyse MAIL_HOST ve MAIL_PORT'u da ekleyin
+
   - type: pserv
     name: ironplug-postgres
-    env: docker
-    plan: standard
-    repo: https://github.com/yourusername/ironpluga.git
-    image: postgres:14-alpine
-    branch: main
+    env: docker # Genellikle 'postgres' olur, ama docker da çalışabilir.
+    plan: starter # 'standard' yerine 'starter' (ücretsiz plan) olabilir, kontrol edin.
+    image:
+      name: postgres # 'image' Render'ın yönettiği veritabanlarında genellikle belirtilmez.
+      version: 14 # '14-alpine' yerine sadece '14' olabilir. Render dokümanını kontrol edin.
     envVars:
       - key: POSTGRES_USER
         sync: false
       - key: POSTGRES_PASSWORD
         sync: false
       - key: POSTGRES_DB
-        value: ironplug 
+        value: ironplug
