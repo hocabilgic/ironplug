@@ -3,7 +3,7 @@ WORKDIR /app
 COPY pom.xml .
 RUN mvn dependency:go-offline -B
 COPY src ./src
-RUN mvn package -DskipTests
+RUN mvn package -DskipTests -Dfile.encoding=UTF-8
 
 FROM eclipse-temurin:17-jre-focal
 WORKDIR /app

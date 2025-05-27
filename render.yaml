@@ -3,62 +3,39 @@ services:
     name: ironplug-app
     env: docker
     repo: https://github.com/hocabilgic/ironplug.git
-
     branch: main
     dockerfilePath: ./Dockerfile
     dockerContext: .
     envVars:
       - key: SPRING_PROFILES_ACTIVE
-        value: render # 'render' olarak güncellendi
-      - key: SERVER_PORT # Render genellikle PORT kullanır, kontrol edin.
+        value: render
+      - key: SERVER_PORT
         value: 10000
-      # --- EKLENMESİ GEREKENLER ---
+      # DB Bilgileri
       - key: DB_HOST
-        fromService: # Otomatik olarak DB adresini alır
-          type: pserv
-          name: ironplug-postgres
-          property: host
+        value: dpg-d0o2u97diees739k3o10-a.oregon-postgres.render.com
       - key: DB_PORT
-        fromService:
-          type: pserv
-          name: ironplug-postgres
-          property: port
+        value: 5432
       - key: DB_NAME
-        fromService:
-          type: pserv
-          name: ironplug-postgres
-          property: database
+        value: ironlgupdb
       - key: DB_USERNAME
-        fromService:
-          type: pserv
-          name: ironplug-postgres
-          property: user
+        value: ironlgupdb
       - key: DB_PASSWORD
-        fromService:
-          type: pserv
-          name: ironplug-postgres
-          property: password
+        sync: false # Render UI'dan girilecek
+      # Mail Bilgileri
       - key: MAIL_USERNAME
-        sync: false # Render UI'dan girin
+        value: hocabilgic80.c@gmail.com
       - key: MAIL_PASSWORD
-        sync: false # Render UI'dan girin
+        sync: false # Render UI'dan girilecek
+      - key: MAIL_HOST
+        value: smtp.gmail.com
+      - key: MAIL_PORT
+        value: 587
+      # JWT Bilgileri
       - key: JWT_SECRET
-        sync: false # Render UI'dan girin
+        value: qWSejklmOPoiuytrDFGHJvbnmTYU12345678QWERTYUIOHJGFDSSERT4567892345
       - key: JWT_EXPIRATION_MS
         value: 8640000
-      # Gerekliyse MAIL_HOST ve MAIL_PORT'u da ekleyin
-
-  - type: pserv
-    name: ironplug-postgres
-    env: docker # Genellikle 'postgres' olur, ama docker da çalışabilir.
-    plan: starter # 'standard' yerine 'starter' (ücretsiz plan) olabilir, kontrol edin.
-    image:
-      name: postgres # 'image' Render'ın yönettiği veritabanlarında genellikle belirtilmez.
-      version: 14 # '14-alpine' yerine sadece '14' olabilir. Render dokümanını kontrol edin.
-    envVars:
-      - key: POSTGRES_USER
-        sync: false
-      - key: POSTGRES_PASSWORD
-        sync: false
-      - key: POSTGRES_DB
-        value: ironplug
+      # Host eklenmesi gerekiyor
+      - key: DB_HOST_DEFAULT
+        value: dpg-d0o2u97diees739k3o10-a.oregon-postgres.render.com
