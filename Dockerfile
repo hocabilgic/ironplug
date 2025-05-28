@@ -15,6 +15,11 @@ COPY --from=build /app/target/*.jar app.jar
 COPY start.sh /start.sh
 RUN chmod +x /start.sh
 
+# Default port
 EXPOSE 8082
 
+# Alternatif port (Render için)
+EXPOSE 10000
+
+# Başlangıç komutu
 CMD ["/start.sh"]

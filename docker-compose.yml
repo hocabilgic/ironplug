@@ -8,25 +8,17 @@ services:
     ports:
       - "8082:8082"
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_PROFILES_ACTIVE=render
+      - DB_HOST=dpg-d0o2u97diees739k3o10-a.oregon-postgres.render.com
+      - DB_PORT=5432
+      - DB_NAME=ironlgupdb
+      - DB_USERNAME=ironlgupdb
+      # DB_PASSWORD değeri dışarıdan verilmeli (güvenlik nedeniyle)
+      # - DB_PASSWORD=your_password_here
       - MAIL_USERNAME=hocabilgic80.c@gmail.com
-      - MAIL_PASSWORD=qisw epcm fqjy wohz
-    depends_on:
-      - db
-      
-  db:
-    image: postgres:14-alpine
-    container_name: ironplug-postgres
-    restart: always
-    ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=ironplug
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-
-volumes:
-  postgres-data:
-    driver: local 
+      # MAIL_PASSWORD değeri dışarıdan verilmeli (güvenlik nedeniyle)
+      # - MAIL_PASSWORD=your_mail_password_here
+      - MAIL_HOST=smtp.gmail.com
+      - MAIL_PORT=587
+      - JWT_EXPIRATION_MS=8640000
+      - DB_HOST_DEFAULT=dpg-d0o2u97diees739k3o10-a.oregon-postgres.render.com 

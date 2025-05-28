@@ -6,6 +6,9 @@ services:
     branch: main
     dockerfilePath: ./Dockerfile
     dockerContext: .
+    plan: free # Plan tipini belirleyin (ücretsiz, starter, vs.)
+    healthCheckPath: /actuator/health # Sağlık kontrolü endpoint'i varsa
+    numInstances: 1 # İstenen instance sayısı
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: render
@@ -31,9 +34,9 @@ services:
         value: smtp.gmail.com
       - key: MAIL_PORT
         value: 587
-      # JWT Bilgileri - JWT_SECRET artık doğrudan properties dosyasında
+      # JWT Bilgileri
       - key: JWT_EXPIRATION_MS
         value: 8640000
-      # Host eklenmesi gerekiyor
+      # Default host değeri
       - key: DB_HOST_DEFAULT
         value: dpg-d0o2u97diees739k3o10-a.oregon-postgres.render.com
